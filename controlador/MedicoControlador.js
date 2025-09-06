@@ -46,27 +46,38 @@ const MedicoControlador = {
     },
 
     // PUT /medicos/:id
-    async actualizar(req, res) {
-        const { id } = req.params;
-        const datos = req.body;
+    // controllers/MedicoControlador.js
+// ...
+async actualizar(req, res) {
+    const { id } = req.params;
+    const { t1, t2, t3, t4, t5 } = req.body; // Desestructuras los datos
 
-        if (Object.keys(datos).length === 0) {
-            return res.status(400).json({ mensaje: 'No hay datos para actualizar' });
+    // Crea un objeto con las claves correctas para el modelo
+    const datos = {};
+    if (t1) datos.nombres = t1;
+    if (t2) datos.especialidad = t2;
+    if (t3) datos.telefono = t3;
+    if (t4) datos.correo = t4;
+    if (t5) datos.direccion = t5;
+
+    if (Object.keys(datos).length === 0) {
+        return res.status(400).json({ mensaje: 'No hay datos para actualizar' });
+    }
+
+    try {
+        const medicoExistente = await Medico.getById(id);
+        if (!medicoExistente) {
+            return res.status(404).json({ mensaje: 'Médico no encontrado' });
         }
 
-        try {
-            const medicoExistente = await Medico.getById(id);
-            if (!medicoExistente) {
-                return res.status(404).json({ mensaje: 'Médico no encontrado' });
-            }
+        const medicoActualizado = await Medico.update(id, datos);
+        res.status(200).json(medicoActualizado);
+    } catch (error) {
+        console.error('Error al actualizar médico:', error);
+        res.status(500).json({ mensaje: 'Error al actualizar el médico' });
+    }
+},
 
-            const medicoActualizado = await Medico.update(id, datos);
-            res.status(200).json(medicoActualizado);
-        } catch (error) {
-            console.error('Error al actualizar médico:', error);
-            res.status(500).json({ mensaje: 'Error al actualizar el médico' });
-        }
-    },
 
     // DELETE /medicos/:id
     async eliminar(req, res) {
