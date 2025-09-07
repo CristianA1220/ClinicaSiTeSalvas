@@ -21,7 +21,8 @@ class MedicoModelo {
 
     static async getById(id) {
         try {
-            const result = await db.query('SELECT * FROM medico WHERE idmedico = $1', [id]);
+            const result = await db.query(
+                'SELECT * FROM medico WHERE idmedico = $1', [id]);
             return result.rows[0];
         } catch (error) {
             console.error('Error en getById:', error);
@@ -74,8 +75,9 @@ class MedicoModelo {
         } catch (error) {
             console.error('Error en delete:', error);
             throw error;
-        }
-    }
-}
+        };
+    };
+   
+};
 
 module.exports = MedicoModelo;
